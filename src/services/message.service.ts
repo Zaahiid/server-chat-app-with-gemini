@@ -1,4 +1,5 @@
 import mongoose from "mongoose";
+import cloudinary from "../config/cloudinary.config";
 import ChatModel from "../models/chat.model";
 import MessageModel from "../models/message.model";
 import { BadRequestException, NotFoundException } from "../utils/app-error";
@@ -36,6 +37,11 @@ export const sendMessageService = async (
   }
 
   let imageUrl;
+
+    if (image) {
+      const uploadRes = await cloudinary.uploader.upload(image);
+      imageUrl = uploadRes.secure_url;
+    }
 
   const newMessage = await MessageModel.create({
     chatId,
